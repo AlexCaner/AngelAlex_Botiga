@@ -19,7 +19,7 @@
         static void AfegirProducte(string producte, string preu, string[,] productes)
         {
             string resposta = "";
-            int numB = 0;
+            int numB = 0, tipus = 0, posicio = 0;
             if (!ComprovarEspai(productes))
             {
                 Console.WriteLine("No hi ha més espais per afegir preus, vols afegir més? ");
@@ -37,7 +37,9 @@
             }
             else
             {
-
+                posicio = TrobarPosicioVuida(productes, tipus);
+                productes[posicio, 0] = producte;
+                productes[posicio, 1] = preu;
             }
 
         }
@@ -56,14 +58,33 @@
             string[,] aux = new string[productes.GetLength(0), productes.GetLength(1) + num];
             productes = aux;
         }
-        static int TrobarPosicioVuida(string[,] productes)
+        static int TrobarPosicioVuida(string[,] productes, int tipus)
         {
+            int posicio = 0;
             bool trobada = false;
-            for(int i = 0; i < productes.GetLength(1) && !trobada; i++)
+            if (tipus == 1)
             {
-                if (productes[0, i] = "")
-                    trobada = true;
+                for (int i = 0; i < productes.GetLength(1) && !trobada; i++)
+                {
+                    if (productes[0, i] == "")
+                    {
+                        trobada = true;
+                        posicio = i;
+                    }
+                }
             }
+            else
+            {
+                for (int i = 0; i < productes.GetLength(1) && !trobada; i++)
+                {
+                    if (productes[1, i] == "")
+                    {
+                        trobada = true;
+                        posicio = i;
+                    }
+                }
+            }
+            return posicio;
         }
     }
 }
