@@ -90,6 +90,26 @@
             }
             return posicio;
         }
-        static void M+
+        static void ModificarPreu(string producte, double preu, string[,] productes)
+        {
+            int posicio = TrobarPosProducte(producte, productes);
+            string preuN = "";
+            preuN = preu.ToString();
+            productes[1, posicio] = preuN;
+        }
+        static int TrobarPosProducte(string producte, string[,] productes)
+        {
+            bool trobat = false;
+            int posicio = 0;
+            for(int i = 0; i < productes.GetLength(1) && !trobat; i++)
+            {
+                if (producte == productes[0, i])
+                {
+                    posicio = i;
+                    trobat = true;
+                }       
+            }
+            return posicio;
+        }
     }
 }
