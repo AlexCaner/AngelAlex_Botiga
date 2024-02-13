@@ -111,5 +111,18 @@
             }
             return posicio;
         }
+        static void ModificarProducte(string producteantic, string[,] productes, string productenou, int nElem)
+        {
+            bool trobat = false;
+            for (int i = 0; i < nElem && !trobat; i++)
+            {
+                if (productes[0, i] == producteantic)
+                {
+                    productes[0, i] = productenou;
+                    trobat = true;
+                }
+            }
+        }
     }
+
 }
