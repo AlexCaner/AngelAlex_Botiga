@@ -6,6 +6,7 @@ class Program
     // MENU 
     static void Main()
     {
+        string[,] productes = new string[2, 3];
         PintarN();
         int opcio = 1, maxim = 3;
         bool seguir = true;
@@ -45,7 +46,7 @@ class Program
                     else opcio = 1;
                     break;
                 case ConsoleKey.Enter:
-                    Switch(opcio);
+                    Switch(opcio, productes);
                     if (opcio == maxim) seguir = false;
                     break;
             }
@@ -94,7 +95,7 @@ class Program
         Console.WriteLine("└───────────────────────────────────┘");
     }
     // BUSCA EL METODE SEGONS EL QUE LI HAGIS DONAT
-    static void Switch(int opcio)
+    static void Switch(int opcio, string[,] productes)
     {
         int intents = 0;
         string usuari = "", contrasenya = "";
@@ -112,7 +113,7 @@ class Program
                     if (usuari == "admin" && contrasenya == "1234")
                     {
                         correcte = true;
-                        MenuAdmin();
+                        MenuAdmin(productes);
                     }
                     else
                     {
@@ -128,13 +129,13 @@ class Program
                 break;
             case 2:
 
-                MenuClient();
+                MenuClient(productes);
                 Console.Clear();
                 break;
         }
     }
     // Menu Admin
-    static void MenuAdmin()
+    static void MenuAdmin(string[,] productes)
     {
         PintarN();
         int opcio = 1, maxim = 8;
@@ -175,16 +176,16 @@ class Program
                     else opcio = 1;
                     break;
                 case ConsoleKey.Enter:
-                    SwitchAd(opcio);
+                    SwitchAd(opcio, productes);
                     if (opcio == maxim) seguir = false;
                     break;
             }
         }
     }
     //Switch Admin
-    static void SwitchAd(int opcio)
+    static void SwitchAd(int opcio, string[,] productes)
     {
-        string[,] productes = new string[2, 4];
+
         string producte = "", producteNou = "";
         int nElem = 4, num = 0;
         double preu = 0;
@@ -194,7 +195,7 @@ class Program
             case 1:
                 while (ComprovarEspai(productes))
                 {
-                    PreguntarProducte(ref productes, ref nElem);
+                    PreguntarProducte(productes, ref nElem);
                     MostrarArray(productes);
                     Thread.Sleep(2000);
                 }
@@ -314,7 +315,7 @@ class Program
         Console.WriteLine("└───────────────────────────────────┘");
     }
     // Menú Client
-    static void MenuClient()
+    static void MenuClient(string[,] productes)
     {
         PintarN();
         int opcio = 1, maxim = 5;
@@ -355,7 +356,7 @@ class Program
                     else opcio = 1;
                     break;
                 case ConsoleKey.Enter:
-                    SwitchClient(opcio);
+                    SwitchClient(opcio, productes);
                     if (opcio == maxim) seguir = false;
                     break;
             }
@@ -421,7 +422,7 @@ class Program
     }
 
     // Switch Menu Client
-    static void SwitchClient(int opcio)
+    static void SwitchClient(int opcio, string[,] productes)
     {
         Console.Clear();
         switch (opcio)
@@ -462,16 +463,16 @@ class Program
         dada = Console.ReadLine();
         return dada;
     }
-    static void PreguntarProducte(ref string[,] productes, ref int nElem)
+    static void PreguntarProducte(string[,] productes, ref int nElem)
     {
         string producte = "", preu = "";
         Console.Write("Quin es el producte que vols afegir? ");
         producte = Convert.ToString(Console.ReadLine());
         Console.Write("Quin es el preu que vols posar-li? ");
         preu = Convert.ToString(Console.ReadLine());
-        AfegirProducte(ref producte, preu, productes, ref nElem);
+        AfegirProducte(producte, preu, productes, ref nElem);
     }
-    static void AfegirProducte(ref string producte, string preu, string[,] productes, ref int nElem)
+    static void AfegirProducte(string producte, string preu, string[,] productes, ref int nElem)
     {
         string resposta = "";
         int numB = 0, tipus = 0, posicio = 0;
@@ -485,11 +486,11 @@ class Program
                 Console.WriteLine("Quants més vols afegir? ");
                 numB = Convert.ToInt32(Console.ReadLine());
                 AmpliarTenda(productes, numB);
-                AfegirProducte(ref producte, preu, productes, ref nElem);
+                AfegirProducte(producte, preu, productes, ref nElem);
             }
             else
             {
-                MenuAdmin();
+                MenuAdmin(productes);
             }
         }
         else
