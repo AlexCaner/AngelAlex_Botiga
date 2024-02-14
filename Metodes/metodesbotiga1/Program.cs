@@ -6,7 +6,19 @@
         {
             //ArrayProductes
             string[,] productes = new string[2, 10];
-            int nElem = 4;
+            int nElem = 0;
+            bool acabar = false;
+            string resposta = "";
+            while (ComprovarEspai(productes) && !acabar)
+            {
+                PreguntarProducte(productes, ref nElem);
+                Console.Write("Has acabat d'afegir productes? ");
+                resposta = Convert.ToString(Console.ReadLine());
+                resposta = resposta.ToUpper();
+                if (resposta == "SI")
+                    acabar = true;
+            }
+            MostrarArray(productes);
         }
         static void PreguntarProducte(string[,] productes, ref int nElem)
         {
@@ -33,24 +45,23 @@
                     AmpliarTenda(productes, numB);
                     AfegirProducte(producte, preu, productes, ref nElem);
                 }
-                else
-                    //Retorn al Menu
+                //else
+                //Retorn al Menu
             }
             else
             {
-                posicio = TrobarPosicioVuida(productes, tipus);
+                posicio = TrobarPosicioVuida(productes);
                 productes[0, posicio] = producte;
                 productes[1, posicio] = preu;
                 nElem++;
             }
-
         }
         static bool ComprovarEspai(string[,] productes)
         {
             bool validacio = false;
-            for (int i = 0; i < productes.GetLength(0); i++)
+            for (int i = 0; i < productes.GetLength(1); i++)
             {
-                if (productes[0, i] == "")
+                if (productes[0, i] == null)
                     validacio = true;
             }
             return validacio;
@@ -62,30 +73,17 @@
                 aux[0, i] = productes[0, i];
             productes = aux;
         }
-        static int TrobarPosicioVuida(string[,] productes, int tipus)
+        static int TrobarPosicioVuida(string[,] productes)
         {
             int posicio = 0;
             bool trobada = false;
-            if (tipus == 1)
+
+            for (int i = 0; i < productes.GetLength(1) && !trobada; i++)
             {
-                for (int i = 0; i < productes.GetLength(1) && !trobada; i++)
+                if (productes[0, i] == null)
                 {
-                    if (productes[0, i] == "")
-                    {
-                        trobada = true;
-                        posicio = i;
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 0; i < productes.GetLength(1) && !trobada; i++)
-                {
-                    if (productes[1, i] == "")
-                    {
-                        trobada = true;
-                        posicio = i;
-                    }
+                    posicio = i;
+                    trobada = true;
                 }
             }
             return posicio;
@@ -97,19 +95,41 @@
             preuN = preu.ToString();
             productes[1, posicio] = preuN;
         }
+        static void ModificarProducte(string producteantic, string[,] productes, string productenou, int nElem)
+        {
+            bool trobat = false;
+            for (int i = 0; i < nElem && !trobat; i++)
+            {
+                if (productes[0, i] == producteantic)
+                {
+                    productes[0, i] = productenou;
+                    trobat = true;
+                }
+            }
+        }
         static int TrobarPosProducte(string producte, string[,] productes)
         {
             bool trobat = false;
             int posicio = 0;
-            for(int i = 0; i < productes.GetLength(1) && !trobat; i++)
+            for (int i = 0; i < productes.GetLength(1) && !trobat; i++)
             {
                 if (producte == productes[0, i])
                 {
                     posicio = i;
                     trobat = true;
-                }       
+                }
             }
             return posicio;
+        }
+        static void MostrarArray(string[,] productes)
+        {
+            for (int i = 0; i < productes.GetLength(1); i++)
+            {
+                Console.Write(productes[0, i] + "\n");
+                Console.Write(productes[1, i] + "");
+                Console.WriteLine();
+
+            }
         }
     }
 }
