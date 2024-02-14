@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Collections.Concurrent;
+using System.Data.Common;
 
 class Program
 {
@@ -7,22 +8,22 @@ class Program
     {
         PintarN();
         int opcio = 1, maxim = 3;
-        bool seguir = true; // Si no es la opció sortir, torna a executar el menú
+        bool seguir = true;
         while (seguir)
         {
-            Menu(opcio, maxim); // Cada cop que cliques una tecla, torna a imprimir el menú, pero amb els canvis dins de el metode
-            ConsoleKeyInfo tecla = Console.ReadKey(); // Detecta les feltxetes
+            Menu(opcio, maxim);
+            ConsoleKeyInfo tecla = Console.ReadKey();
             Thread.Sleep(1);
             switch (tecla.Key)
             {
-                case ConsoleKey.UpArrow: // Si clica la fletxa de adalt li resta 1 a la ubicació
+                case ConsoleKey.UpArrow:
                     if (opcio > 1)
                     {
                         opcio = opcio - 1;
                     }
                     else opcio = maxim;
                     break;
-                case ConsoleKey.DownArrow: // El mateix al reves
+                case ConsoleKey.DownArrow:
                     if (opcio < maxim)
                     {
                         opcio = opcio + 1;
@@ -43,9 +44,9 @@ class Program
                     }
                     else opcio = 1;
                     break;
-                case ConsoleKey.Enter: // Quan li dona a la tecla enter, executa el switch que segons la ubicació on estaba executa la opcio.
+                case ConsoleKey.Enter:
                     Switch(opcio);
-                    if (opcio == maxim) seguir = false; // En cas de que sigui 9 la opcio, es a dir, sortir, la variable seguir es converteix en fals, així que ja sortira del programa.
+                    if (opcio == maxim) seguir = false;
                     break;
             }
         }
@@ -58,10 +59,10 @@ class Program
         Console.WriteLine("┌───────────────────────────────────┐");
         Console.WriteLine("│               USUARI              │");
         Console.WriteLine("│┌─────────────────────────────────┐│");
-        for (int i = 0; i < maxim + 1; i++) // Imprimeix un a un les opcions.
+        for (int i = 0; i < maxim + 1; i++)
         {
 
-            switch (i) // Imprimeix un a un
+            switch (i)
             {
                 case 1:
                     Console.Write("││");
@@ -137,22 +138,22 @@ class Program
     {
         PintarN();
         int opcio = 1, maxim = 8;
-        bool seguir = true; // Si no es la opció sortir, torna a executar el menú
+        bool seguir = true;
         while (seguir)
         {
-            MenuAd(opcio, maxim); // Cada cop que cliques una tecla, torna a imprimir el menú, pero amb els canvis dins de el metode
-            ConsoleKeyInfo tecla = Console.ReadKey(); // Detecta les feltxetes
+            MenuAd(opcio, maxim);
+            ConsoleKeyInfo tecla = Console.ReadKey();
             Thread.Sleep(1);
             switch (tecla.Key)
             {
-                case ConsoleKey.UpArrow: // Si clica la fletxa de adalt li resta 1 a la ubicació
+                case ConsoleKey.UpArrow:
                     if (opcio > 1)
                     {
                         opcio = opcio - 1;
                     }
                     else opcio = maxim;
                     break;
-                case ConsoleKey.DownArrow: // El mateix al reves
+                case ConsoleKey.DownArrow:
                     if (opcio < maxim)
                     {
                         opcio = opcio + 1;
@@ -173,9 +174,9 @@ class Program
                     }
                     else opcio = 1;
                     break;
-                case ConsoleKey.Enter: // Quan li dona a la tecla enter, executa el switch que segons la ubicació on estaba executa la opcio.
+                case ConsoleKey.Enter:
                     SwitchAd(opcio);
-                    if (opcio == maxim) seguir = false; // En cas de que sigui 9 la opcio, es a dir, sortir, la variable seguir es converteix en fals, així que ja sortira del programa.
+                    if (opcio == maxim) seguir = false;
                     break;
             }
         }
@@ -183,22 +184,51 @@ class Program
     //Switch Admin
     static void SwitchAd(int opcio)
     {
+        string[,] productes = new string[2, 4];
+        string producte = "", producteNou = "";
+        int nElem = 4, num = 0;
+        double preu = 0;
         Console.Clear();
         switch (opcio)
         {
             case 1:
+                while (ComprovarEspai(productes))
+                {
+                    PreguntarProducte(ref productes, ref nElem);
+                    MostrarArray(productes);
+                    Thread.Sleep(2000);
+                }
+                Console.Clear();
                 break;
             case 2:
+                Console.WriteLine("Cuants vols afegir?");
+                num = Convert.ToInt32(Console.ReadLine());
+                AmpliarTenda(productes, num);
+                Console.Clear();
                 break;
             case 3:
+                Console.WriteLine("Quin es el producte que vols modificar?");
+                producte = Console.ReadLine();
+                Console.WriteLine("Indica el nou preu");
+                preu = Convert.ToDouble(Console.ReadLine());
+                ModificarPreu(producte, preu, productes);
+                Console.Clear();
                 break;
             case 4:
+                Console.WriteLine("Quin producte vols modificar?");
+                producte = Console.ReadLine();
+                Console.WriteLine("Quin es el nou?");
+                producteNou = Console.ReadLine();
+                ModificarProducte(producte, productes, producteNou, nElem);
+                Console.Clear();
                 break;
             case 5:
                 break;
             case 6:
                 break;
             case 7:
+                MostrarArray(productes);
+                Thread.Sleep(2000);
                 break;
             case 8:
                 Main();
@@ -214,10 +244,10 @@ class Program
         Console.WriteLine("┌───────────────────────────────────┐");
         Console.WriteLine("│               BOTIGA              │");
         Console.WriteLine("│┌─────────────────────────────────┐│");
-        for (int i = 0; i < maxim + 3; i++) // Imprimeix un a un les opcions.
+        for (int i = 0; i < maxim + 3; i++)
         {
 
-            switch (i) // Imprimeix un a un
+            switch (i)
             {
                 case 1:
                     Console.Write("││");
@@ -264,7 +294,7 @@ class Program
                 case 7:
                     Console.Write("││");
                     if (i == opcio) Pintar();
-                    Console.Write("              Mostrar            ");
+                    Console.Write("             Mostrar             ");
                     PintarN();
                     Console.Write("││\n");
                     break; ;
@@ -288,22 +318,22 @@ class Program
     {
         PintarN();
         int opcio = 1, maxim = 5;
-        bool seguir = true; // Si no es la opció sortir, torna a executar el menú
+        bool seguir = true;
         while (seguir)
         {
-            MenuClient(opcio, maxim); // Cada cop que cliques una tecla, torna a imprimir el menú, pero amb els canvis dins de el metode
-            ConsoleKeyInfo tecla = Console.ReadKey(); // Detecta les feltxetes
+            MenuClient(opcio, maxim);
+            ConsoleKeyInfo tecla = Console.ReadKey();
             Thread.Sleep(1);
             switch (tecla.Key)
             {
-                case ConsoleKey.UpArrow: // Si clica la fletxa de adalt li resta 1 a la ubicació
+                case ConsoleKey.UpArrow:
                     if (opcio > 1)
                     {
                         opcio = opcio - 1;
                     }
                     else opcio = maxim;
                     break;
-                case ConsoleKey.DownArrow: // El mateix al reves
+                case ConsoleKey.DownArrow:
                     if (opcio < maxim)
                     {
                         opcio = opcio + 1;
@@ -324,9 +354,9 @@ class Program
                     }
                     else opcio = 1;
                     break;
-                case ConsoleKey.Enter: // Quan li dona a la tecla enter, executa el switch que segons la ubicació on estaba executa la opcio.
+                case ConsoleKey.Enter:
                     SwitchClient(opcio);
-                    if (opcio == maxim) seguir = false; // En cas de que sigui 9 la opcio, es a dir, sortir, la variable seguir es converteix en fals, així que ja sortira del programa.
+                    if (opcio == maxim) seguir = false;
                     break;
             }
         }
@@ -336,26 +366,26 @@ class Program
     static void MenuClient(int opcio, int maxim)
     {
         Console.Clear();
-        PintarN();
-        Console.WriteLine("┌───────────────────────────────────┐");
-        Console.WriteLine("│               BOTIGA              │");
-        Console.WriteLine("│┌─────────────────────────────────┐│");
-        for (int i = 0; i < maxim + 3; i++) // Imprimeix un a un les opcions.
+        for (int i = 0; i < maxim + 3; i++)
         {
 
-            switch (i) // Imprimeix un a un
+            switch (i)
             {
                 case 1:
-                    Console.Write("││");
-                    if (i == opcio) Pintar();
-                    Console.Write("            Productes            ");
                     PintarN();
-                    Console.Write("││\n");
+                    Console.WriteLine("┌───────────────────────────────────┐");
+                    Console.Write("│      BOTIGA              ");
+                    if (i == opcio) Pintar();
+                    Console.OutputEncoding = System.Text.Encoding.UTF8;
+                    Console.Write(" Cis ");
+                    PintarN();
+                    Console.Write("    │\n");
+                    Console.WriteLine("│┌─────────────────────────────────┐│");
                     break;
                 case 2:
                     Console.Write("││");
                     if (i == opcio) Pintar();
-                    Console.Write("            Cistella             ");
+                    Console.Write("            Productes            ");
                     PintarN();
                     Console.Write("││\n");
                     break;
@@ -381,6 +411,7 @@ class Program
                     PintarN();
                     Console.Write("││\n");
                     break; ;
+
             }
             Console.ResetColor();
             PintarN();
@@ -409,6 +440,12 @@ class Program
         }
     }
 
+    // static void Cistella(string[] producrte, double[] quantitat, )
+    //{
+    //     int i = 0;
+
+    // }
+
     static void Pintar()
     {
         Console.BackgroundColor = ConsoleColor.Blue;
@@ -424,5 +461,116 @@ class Program
         string dada;
         dada = Console.ReadLine();
         return dada;
+    }
+    static void PreguntarProducte(ref string[,] productes, ref int nElem)
+    {
+        string producte = "", preu = "";
+        Console.Write("Quin es el producte que vols afegir? ");
+        producte = Convert.ToString(Console.ReadLine());
+        Console.Write("Quin es el preu que vols posar-li? ");
+        preu = Convert.ToString(Console.ReadLine());
+        AfegirProducte(ref producte, preu, productes, ref nElem);
+    }
+    static void AfegirProducte(ref string producte, string preu, string[,] productes, ref int nElem)
+    {
+        string resposta = "";
+        int numB = 0, tipus = 0, posicio = 0;
+        if (!ComprovarEspai(productes))
+        {
+            Console.WriteLine("No hi ha més espais per afegir productes, vols afegir més? ");
+            resposta = Convert.ToString(Console.ReadLine());
+            resposta = resposta.ToUpper();
+            if (resposta == "SI")
+            {
+                Console.WriteLine("Quants més vols afegir? ");
+                numB = Convert.ToInt32(Console.ReadLine());
+                AmpliarTenda(productes, numB);
+                AfegirProducte(ref producte, preu, productes, ref nElem);
+            }
+            else
+            {
+                MenuAdmin();
+            }
+        }
+        else
+        {
+            posicio = TrobarPosicioVuida(productes);
+            productes[0, posicio] = producte;
+            productes[1, posicio] = preu;
+            nElem++;
+        }
+
+    }
+    static bool ComprovarEspai(string[,] productes)
+    {
+        bool validacio = false;
+        for (int i = 0; i < productes.GetLength(1); i++)
+        {
+            if (productes[0, i] == null)
+                validacio = true;
+        }
+        return validacio;
+    }
+    static void AmpliarTenda(string[,] productes, int num)
+    {
+        string[,] aux = new string[productes.GetLength(0), productes.GetLength(1) + num];
+        for (int i = 0; i < productes.GetLength(1); i++)
+            aux[0, i] = productes[0, i];
+        productes = aux;
+    }
+    static int TrobarPosicioVuida(string[,] productes)
+    {
+        int posicio = 0;
+        bool trobada = false;
+
+        for (int i = 0; i < productes.GetLength(1) && !trobada; i++)
+        {
+            if (productes[0, i] == null)
+            {
+                posicio = i;
+                trobada = true;
+            }
+        }
+        return posicio;
+    }
+    static void ModificarPreu(string producte, double preu, string[,] productes)
+    {
+        int posicio = TrobarPosProducte(producte, productes);
+        string preuN = "";
+        preuN = preu.ToString();
+        productes[1, posicio] = preuN;
+    }
+    static int TrobarPosProducte(string producte, string[,] productes)
+    {
+        bool trobat = false;
+        int posicio = 0;
+        for (int i = 0; i < productes.GetLength(1) && !trobat; i++)
+        {
+            if (producte == productes[0, i])
+            {
+                posicio = i;
+                trobat = true;
+            }
+        }
+        return posicio;
+    }
+    static void ModificarProducte(string producteantic, string[,] productes, string productenou, int nElem)
+    {
+        bool trobat = false;
+        for (int i = 0; i < nElem && !trobat; i++)
+        {
+            if (productes[0, i] == producteantic)
+            {
+                productes[0, i] = productenou;
+                trobat = true;
+            }
+        }
+    }
+    static void MostrarArray(string[,] productes)
+    {
+        for (int i = 0; i < productes.GetLength(1); i++)
+        {
+            Console.WriteLine(productes[0, i]);
+        }
     }
 }
