@@ -13,32 +13,52 @@ namespace metodesbotiga1
         }
         static void Switch(string[,] productes, ref int nElem)
         {
+
+
+            string resposta = "NO";
             int aux;
-            Console.WriteLine("Pon un 1 para el switch: ");
-            aux = Convert.ToInt32(Console.ReadLine());
-            switch(aux)
+            do
             {
-                case 1:
-                    bool acabar = false;
-                    string resposta;
-                    while (!acabar)
-                    {
-                        PreguntarProducte(productes, ref nElem);
-                        Console.Write("Has acabat d'afegir productes? ");
-                        resposta = Convert.ToString(Console.ReadLine());
-                        resposta = resposta.ToUpper();
-                        if (resposta == "SI")
-                            acabar = true;
-                    }
-                    MostrarArray(productes);
-                    break;
-                case 2:
+                Console.WriteLine("Que opcion quieres: ");
+                aux = Convert.ToInt32(Console.ReadLine());
+                switch (aux)
+                {
+                    case 1:
+                        do
+                        {
+                            int numB;
+                            if (!ComprovarEspai(productes))
+                            {
+                                Console.WriteLine("No hi ha més espais per afegir productes, vols afegir més? ");
+                                resposta = Convert.ToString(Console.ReadLine());
+                                resposta = resposta.ToUpper();
+                                if (resposta == "SI")
+                                {
+                                    Console.WriteLine("Quants més vols afegir? ");
+                                    numB = Convert.ToInt32(Console.ReadLine());
+                                    AmpliarTenda(ref productes, numB);
+                                }
+                            }
+                            else
+                            {
+                                PreguntarProducte(productes, ref nElem);
+                                Console.Write("Vols continuar afegint productes? ");
+                                resposta = Convert.ToString(Console.ReadLine());
+                                resposta = resposta.ToUpper();
+                                MostrarArray(productes);
+                                
 
-                default:
-                    Console.WriteLine();
-                    break;
-            }
-
+                            }
+                        } while (resposta.ToUpper() != "NO");
+                        break;
+                    case 2:
+                        MostrarArray(productes);
+                        break;
+                    default:
+                        Console.WriteLine();
+                        break;
+                }
+            } while (aux != 99);
         }
         static void PreguntarProducte(string[,] productes, ref int nElem)
         {
@@ -51,25 +71,7 @@ namespace metodesbotiga1
         }
         static void AfegirProducte(string producte, string preu, string[,] productes, ref int nElem)
         {
-            string resposta;
-            int numB, tipus, posicio;
-            if (!ComprovarEspai(productes))
-            {
-                Console.WriteLine("No hi ha més espais per afegir productes, vols afegir més? ");
-                resposta = Convert.ToString(Console.ReadLine());
-                resposta = resposta.ToUpper();
-                if (resposta == "SI")
-                {
-                    Console.WriteLine("Quants més vols afegir? ");
-                    numB = Convert.ToInt32(Console.ReadLine());
-                    AmpliarTenda(ref productes, numB);
-                    MostrarArray(productes);
-                    Switch(productes, ref nElem);                
-                }
-                //else
-                //Retorn al Menu
-            }
-            else
+            int posicio;
             {
                 posicio = TrobarPosicioVuida(productes);
                 productes[0, posicio] = producte;
