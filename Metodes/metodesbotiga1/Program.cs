@@ -1,28 +1,46 @@
-﻿namespace metodesbotiga1
+﻿using System.Text.Json;
+
+namespace metodesbotiga1
 {
     internal class Program
     {
         static void Main(string[] args)
         {
             //ArrayProductes
-            string[,] productes = new string[2, 10];
+            string[,] productes = new string[2, 1];
             int nElem = 0;
-            bool acabar = false;
-            string resposta = "";
-            while (ComprovarEspai(productes) && !acabar)
+            Switch(productes, ref nElem);
+        }
+        static void Switch(string[,] productes, ref int nElem)
+        {
+            int aux;
+            Console.WriteLine("Pon un 1 para el switch: ");
+            aux = Convert.ToInt32(Console.ReadLine());
+            switch(aux)
             {
-                PreguntarProducte(productes, ref nElem);
-                Console.Write("Has acabat d'afegir productes? ");
-                resposta = Convert.ToString(Console.ReadLine());
-                resposta = resposta.ToUpper();
-                if (resposta == "SI")
-                    acabar = true;
+                case 1:
+                    bool acabar = false;
+                    string resposta;
+                    while (!acabar)
+                    {
+                        PreguntarProducte(productes, ref nElem);
+                        Console.Write("Has acabat d'afegir productes? ");
+                        resposta = Convert.ToString(Console.ReadLine());
+                        resposta = resposta.ToUpper();
+                        if (resposta == "SI")
+                            acabar = true;
+                    }
+                    MostrarArray(productes);
+                    break;
+                default:
+                    Console.WriteLine();
+                    break;
             }
-            MostrarArray(productes);
+
         }
         static void PreguntarProducte(string[,] productes, ref int nElem)
         {
-            string producte = "", preu = "";
+            string producte, preu;
             Console.Write("Quin es el producte que vols afegir? ");
             producte = Convert.ToString(Console.ReadLine());
             Console.Write("Quin es el preu que vols posar-li? ");
@@ -31,8 +49,8 @@
         }
         static void AfegirProducte(string producte, string preu, string[,] productes, ref int nElem)
         {
-            string resposta = "";
-            int numB = 0, tipus = 0, posicio = 0;
+            string resposta;
+            int numB, tipus, posicio;
             if (!ComprovarEspai(productes))
             {
                 Console.WriteLine("No hi ha més espais per afegir productes, vols afegir més? ");
@@ -42,9 +60,8 @@
                 {
                     Console.WriteLine("Quants més vols afegir? ");
                     numB = Convert.ToInt32(Console.ReadLine());
-                    AmpliarTenda(productes, numB);
-                    AfegirProducte(producte, preu, productes, ref nElem);
-                }
+                    AmpliarTenda(ref productes, numB);
+                    Switch(productes, ref nElem);                }
                 //else
                 //Retorn al Menu
             }
@@ -66,11 +83,14 @@
             }
             return validacio;
         }
-        static void AmpliarTenda(string[,] productes, int num)
+        static void AmpliarTenda(ref string[,] productes, int num)
         {
             string[,] aux = new string[productes.GetLength(0), productes.GetLength(1) + num];
             for (int i = 0; i < productes.GetLength(1); i++)
+            {
                 aux[0, i] = productes[0, i];
+                aux[1, i] = productes[1, i];
+            }
             productes = aux;
         }
         static int TrobarPosicioVuida(string[,] productes)
@@ -125,10 +145,8 @@
         {
             for (int i = 0; i < productes.GetLength(1); i++)
             {
-                Console.Write(productes[0, i] + "\n");
-                Console.Write(productes[1, i] + "");
-                Console.WriteLine();
-
+                Console.WriteLine(productes[0, i]);
+                Console.WriteLine(productes[1, i]);
             }
         }
     }
