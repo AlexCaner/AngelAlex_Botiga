@@ -350,7 +350,7 @@ class Program
     static void MenuClient(string[,] productes, string[,] cistella, double diners)
     {
         PintarN();
-        int opcio = 1, maxim = 5;
+        int opcio = 2, maxim = 5;
         bool seguir = true;
         while (seguir)
         {
@@ -388,7 +388,7 @@ class Program
                     else opcio = 1;
                     break;
                 case ConsoleKey.Enter:
-                    SwitchClient(opcio, productes, cistella, diners);
+                    SwitchClient(opcio, productes, cistella, ref diners);
                     if (opcio == maxim) seguir = false;
                     break;
             }
@@ -455,7 +455,7 @@ class Program
     }
 
     // Switch Menu Client
-    static void SwitchClient(int opcio, string[,] productes, string[,] cistella, double diners)
+    static void SwitchClient(int opcio, string[,] productes, string[,] cistella, ref double diners)
     {
         Console.Clear();
        
@@ -466,7 +466,7 @@ class Program
                 Console.WriteLine($"      CISTELLA        DINERS: {diners}");
                 Console.WriteLine("└───────────────────────────────────┘");
                 MostrarArrayClient(cistella);
-                CistellaClient(cistella, ref diners, productes);
+                CistellaClient(cistella, ref diners);
                 break;
             case 2:
                 string resposta = "", producte = "";
@@ -508,6 +508,9 @@ class Program
                 Console.Clear();
                 break;
             case 3:
+                BubbleSort(cistella);
+                MostrarArrayClient(cistella);
+                Thread.Sleep(5000);
                 break;
             case 4:
                 Console.WriteLine("┌───────────────────────────────────┐");
@@ -709,10 +712,10 @@ class Program
         if (trobat) return posicio;
         else return -1;
     }
-    static void CistellaClient(string[,] cistella, ref double diners, string[,] productes)
+    static void CistellaClient(string[,] cistella, ref double diners)
     {
         string comprar;
-        Console.WriteLine("Vols comprar ho que tens a la cistella?");
+        Console.WriteLine("\nVols comprar ho que tens a la cistella?");
         comprar = Console.ReadLine();
         comprar = comprar.ToUpper();
         if (comprar == "SI")
@@ -726,6 +729,21 @@ class Program
                 cistella[3, i] = null;
             }
         }
-        else MenuClient(productes, cistella, diners);
+    }
+    static void BubbleSort(string[,] cistella)
+    {
+        int colum = TrobarPosicioVuida(cistella);
+        for (int i = 0; i < colum - 1; i++)
+        {
+            for (int j = 0; j < colum - i - 1; j++)
+            {
+                if (cistella[0, j].CompareTo(cistella[0, j + 1]) > 0)
+                {
+                    string aux = cistella[0, j];
+                    cistella[0, j] = cistella[0, j + 1];
+                    cistella[0, j + 1] = aux;
+                }
+            }
+        }
     }
 }
