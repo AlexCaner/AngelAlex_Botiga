@@ -46,8 +46,6 @@ namespace metodesbotiga1
                                 resposta = Convert.ToString(Console.ReadLine());
                                 resposta = resposta.ToUpper();
                                 MostrarArray(productes);
-                                
-
                             }
                         } while (resposta.ToUpper() != "NO");
                         break;
@@ -154,6 +152,10 @@ namespace metodesbotiga1
                 Console.WriteLine(productes[0, i]);
                 Console.WriteLine(productes[1, i]);
             }
+        }
+        static void ToString(string[,] productes)
+        {
+
         }
     }
 }
