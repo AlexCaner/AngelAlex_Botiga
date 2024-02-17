@@ -5,8 +5,8 @@ class Program
 {
     static void Main()
     {
-        string[,] productes = new string[2, 3];
-        string[,] cistella = new string[4, 30];
+        string[,] productes = new string[2, 10];
+        string[,] cistella = new string[4, 50];
         double diners = 0;
         MenuP(productes, cistella, diners);
     }
@@ -199,7 +199,7 @@ class Program
     //Switch Admin
     static void SwitchAd(int opcio, string[,] productes, string[,] cistella, double diners)
     {
-        string producte = "", producteNou = "", resposta;
+        string producte = "", producteNou = "", resposta = "";
         int nElem = 4, num = 0;
         double preu = 0;
         bool acabar = false;
@@ -210,15 +210,30 @@ class Program
                 Console.WriteLine("┌───────────────────────────────────┐");
                 Console.WriteLine("│          AFEGIR PRODUCTE          │");
                 Console.WriteLine("└───────────────────────────────────┘");
-                while (!acabar)
+                do
                 {
-                    PreguntarProducte(productes, ref nElem, cistella, diners);
-                    Console.Write("Has acabat d'afegir productes? ");
-                    resposta = Console.ReadLine();
-                    resposta = resposta.ToUpper();
-                    if (resposta == "SI")
-                        acabar = true;
-                }
+                    int numB;
+                    if (!ComprovarEspai(productes))
+                    {
+                        Console.WriteLine("No hi ha més espais per afegir productes, vols afegir més? ");
+                        resposta = Convert.ToString(Console.ReadLine());
+                        resposta = resposta.ToUpper();
+                        if (resposta == "SI")
+                        {
+                            Console.WriteLine("Quants més vols afegir? ");
+                            numB = Convert.ToInt32(Console.ReadLine());
+                            AmpliarTenda(ref productes, numB);
+                        }
+                    }
+                    else
+                    {
+                        PreguntarProducte(productes, ref nElem);
+                        Console.Write("Vols continuar afegint productes? ");
+                        resposta = Convert.ToString(Console.ReadLine());
+                        resposta = resposta.ToUpper();
+                        MostrarArray(productes);
+                    }
+                } while (resposta.ToUpper() != "NO");
                 Console.Clear();
                 break;
             case 2:
@@ -228,33 +243,76 @@ class Program
                 Console.WriteLine("Cuants vols afegir?");
                 num = Convert.ToInt32(Console.ReadLine());
                 AmpliarTenda(ref productes, num);
+                MostrarArray(productes);
                 Console.Clear();
                 break;
             case 3:
                 Console.WriteLine("┌───────────────────────────────────┐");
                 Console.WriteLine("│           MODIFICAR PREU          │");
                 Console.WriteLine("└───────────────────────────────────┘");
+                bool trobat = false;
                 Console.WriteLine("Quin es el producte que vols modificar?");
                 producte = Console.ReadLine();
-                Console.WriteLine("Indica el nou preu");
-                preu = Convert.ToDouble(Console.ReadLine());
-                ModificarPreu(producte, preu, productes);
+                for (int i = 0; i < nElem; i++)
+                {
+                    if (producte == productes[0, i])
+                        trobat = true;
+                }
+                if (trobat)
+                {
+                    Console.WriteLine("Indica el nou preu");
+                    preu = Convert.ToDouble(Console.ReadLine());
+                    ModificarPreu(producte, preu, productes, nElem);
+                    MostrarArray(productes);
+                }
+                else
+                {
+                    Console.WriteLine("No s'ha trobat cap proudcte amb aquest nom. Tornant al menú.");
+                    //Aqui lo mismo
+                }
+
                 Console.Clear();
                 break;
             case 4:
                 Console.WriteLine("┌───────────────────────────────────┐");
                 Console.WriteLine("│        MODIFICAR PRODUCTE         │");
                 Console.WriteLine("└───────────────────────────────────┘");
+                trobat = false;
                 Console.WriteLine("Quin producte vols modificar?");
                 producte = Console.ReadLine();
-                Console.WriteLine("Quin es el nou?");
-                producteNou = Console.ReadLine();
-                ModificarProducte(producte, productes, producteNou, nElem);
+                for (int i = 0; i < nElem; i++)
+                {
+                    if (producte == productes[0, i])
+                        trobat = true;
+                }
+                if (trobat)
+                {
+                    Console.WriteLine("Quin es el nou?");
+                    producteNou = Console.ReadLine();
+                    ModificarProducte(producte, productes, producteNou, nElem);
+                    MostrarArray(productes);
+                }
+                else
+                {
+                    Console.WriteLine("No s'ha trobat cap proudcte amb aquest nom. Tornant al menú.");
+                }
                 Console.Clear();
                 break;
             case 5:
+                Console.WriteLine("┌───────────────────────────────────┐");
+                Console.WriteLine("│       ORDENAR PER PRODUCTE        │");
+                Console.WriteLine("└───────────────────────────────────┘");
+                BubbleShortStrings(productes);
+                MostrarArray(productes);
+                Console.Clear();
                 break;
             case 6:
+                Console.WriteLine("┌───────────────────────────────────┐");
+                Console.WriteLine("│         ORDENAR PER PREU          │");
+                Console.WriteLine("└───────────────────────────────────┘");
+                BubbleShortPreus(productes);
+                MostrarArray(productes);
+                Console.Clear();
                 break;
             case 7:
                 Console.WriteLine("┌───────────────────────────────────┐");
@@ -266,8 +324,8 @@ class Program
             case 8:
                 MenuP(productes, cistella, diners);
                 break;
-
         }
+
     }
     // Interfície Gràfica Admin
     static void MenuAd(int opcio, int maxim)
@@ -442,7 +500,7 @@ class Program
                     Console.Write("           Tencar Sessiò         ");
                     PintarN();
                     Console.Write("││\n");
-                    
+
                     break; ;
 
             }
@@ -458,7 +516,7 @@ class Program
     static void SwitchClient(int opcio, string[,] productes, string[,] cistella, ref double diners)
     {
         Console.Clear();
-       
+
         switch (opcio)
         {
             case 1:
@@ -472,7 +530,7 @@ class Program
                 string resposta = "", producte = "";
                 bool acabar = false;
                 int i, posicio = -1, cantitat;
-                
+
                 while (!acabar)
                 {
                     Console.WriteLine("─────────────────────────────────────");
@@ -483,13 +541,13 @@ class Program
                     Console.WriteLine("│          AFEGIR PRODUCTE          │");
                     Console.WriteLine("└───────────────────────────────────┘");
                     posicio = -1;
-                    i = TrobarPosicioVuida(cistella);
-                    while(posicio == -1)
+                    i = TrobarPosicioBuida(cistella);
+                    while (posicio == -1)
                     {
                         Console.WriteLine("Quin producte vols afegir?");
                         producte = Console.ReadLine();
                         posicio = TrobarPosClient(producte, productes);
-                        if (posicio == -1) 
+                        if (posicio == -1)
                         {
                             Console.WriteLine("No hi ha ningun producte amb aquell nom");
                         }
@@ -508,7 +566,7 @@ class Program
                 Console.Clear();
                 break;
             case 3:
-                BubbleSort(cistella);
+                BubbleShortStringsCistella(cistella);
                 MostrarArrayClient(cistella);
                 Thread.Sleep(5000);
                 break;
@@ -542,44 +600,22 @@ class Program
         dada = Console.ReadLine();
         return dada;
     }
-    static void PreguntarProducte(string[,] productes, ref int nElem, string[,] cistella, double diners)
+    static void PreguntarProducte(string[,] productes, ref int nElem)
     {
-        string producte = "", preu = "";
+        string producte, preu;
         Console.Write("Quin es el producte que vols afegir? ");
         producte = Convert.ToString(Console.ReadLine());
         Console.Write("Quin es el preu que vols posar-li? ");
         preu = Convert.ToString(Console.ReadLine());
-        AfegirProducte(producte, preu, productes, ref nElem, cistella, diners);
+        AfegirProducte(producte, preu, productes, ref nElem);
     }
-    static void AfegirProducte(string producte, string preu, string[,] productes, ref int nElem, string[,] cistella, double diners)
+    static void AfegirProducte(string producte, string preu, string[,] productes, ref int nElem)
     {
-        string resposta = "";
-        int numB = 0, tipus = 0, posicio = 0;
-        if (!ComprovarEspai(productes))
-        {
-            Console.WriteLine("No hi ha més espais per afegir productes, vols afegir més? ");
-            resposta = Convert.ToString(Console.ReadLine());
-            resposta = resposta.ToUpper();
-            if (resposta == "SI")
-            {
-                Console.WriteLine("Quants més vols afegir? ");
-                numB = Convert.ToInt32(Console.ReadLine());
-                AmpliarTenda(ref productes, numB);
-                PreguntarProducte(productes, ref nElem, cistella, diners);
-            }
-            else
-            {
-                MenuAdmin(productes, cistella, diners);
-            }
-        }
-        else
-        {
-            posicio = TrobarPosicioVuida(productes);
-            productes[0, posicio] = producte;
-            productes[1, posicio] = preu;
-            nElem++;
-        }
-
+        int posicio;
+        posicio = TrobarPosicioBuida(productes);
+        productes[0, posicio] = producte;
+        productes[1, posicio] = preu;
+        nElem++;
     }
     static bool ComprovarEspai(string[,] productes)
     {
@@ -601,7 +637,7 @@ class Program
         }
         productes = aux;
     }
-    static int TrobarPosicioVuida(string[,] productes)
+    static int TrobarPosicioBuida(string[,] productes)
     {
         int posicio = 0;
         bool trobada = false;
@@ -616,9 +652,9 @@ class Program
         }
         return posicio;
     }
-    static void ModificarPreu(string producte, double preu, string[,] productes)
+    static void ModificarPreu(string producte, double preu, string[,] productes, int nElem)
     {
-        int posicio = TrobarPosProducte(producte, productes);
+        int posicio = TrobarPosProducte(producte, productes, nElem);
         string preuN = "";
         preuN = preu.ToString();
         productes[1, posicio] = preuN;
@@ -635,11 +671,11 @@ class Program
             }
         }
     }
-    static int TrobarPosProducte(string producte, string[,] productes)
+    static int TrobarPosProducte(string producte, string[,] productes, int nElem)
     {
         bool trobat = false;
         int posicio = 0;
-        for (int i = 0; i < productes.GetLength(1) && !trobat; i++)
+        for (int i = 0; i < nElem && !trobat; i++)
         {
             if (producte == productes[0, i])
             {
@@ -651,21 +687,39 @@ class Program
     }
     static void MostrarArray(string[,] productes)
     {
+        string taula = ToString(productes);
+        Console.WriteLine(taula);
+    }
+    static string ToString(string[,] productes)
+    {
+        string mostrar = "╔═════════════╦══════════╗\n" +
+            "║  Productos  ║  Precio  ║\n";
+        mostrar += "╚═════════════╩══════════╝\n";
         for (int i = 0; i < productes.GetLength(1); i++)
         {
-            Console.Write(productes[0, i]);
-            Console.Write(" " + productes[1, i] + "\n");
+            string producte = productes[0, i];
+            string preu = productes[1, i];
+            if (producte == null && preu == null)
+
+            {
+                mostrar += $"  NULL         NULL  \n";
+            }
+            else
+                mostrar += $"  {producte}         {preu}  \n";
         }
+
+        return mostrar;
     }
     static void MostrarArrayClient(string[,] cistella)
     {
         for (int i = 0; i < cistella.GetLength(1); i++)
         {
-            if (cistella[2, i] != null ) { 
-            Console.Write("Producte: " + cistella[0, i]);
-            Console.Write("   Preu unitari: " + cistella[1, i]);
-            Console.Write("   Unitats: " + cistella[2, i]);
-            Console.Write("   Total: " + cistella[3, i] + "\n");
+            if (cistella[2, i] != null)
+            {
+                Console.Write("Producte: " + cistella[0, i]);
+                Console.Write("   Preu unitari: " + cistella[1, i]);
+                Console.Write("   Unitats: " + cistella[2, i]);
+                Console.Write("   Total: " + cistella[3, i] + "\n");
             }
         }
     }
@@ -730,18 +784,61 @@ class Program
             }
         }
     }
-    static void BubbleSort(string[,] cistella)
+    static void BubbleShortStringsCistella(string[,] cistella)
     {
-        int colum = TrobarPosicioVuida(cistella);
+        int files = cistella.GetLength(0);
+        int colum = cistella.GetLength(1);
         for (int i = 0; i < colum - 1; i++)
         {
             for (int j = 0; j < colum - i - 1; j++)
             {
                 if (cistella[0, j].CompareTo(cistella[0, j + 1]) > 0)
                 {
-                    string aux = cistella[0, j];
-                    cistella[0, j] = cistella[0, j + 1];
-                    cistella[0, j + 1] = aux;
+                    for (int k = 0; k < files; k++)
+                    {
+                        string aux = cistella[k, j];
+                        cistella[k, j] = cistella[k, j + 1];
+                        cistella[k, j + 1] = aux;
+                    }
+                }
+            }
+        }
+    }
+    static void BubbleShortStrings(string[,] productes)
+    {
+        int colum = productes.GetLength(1);
+        for (int i = 0; i < colum - 1; i++)
+        {
+            for (int j = 0; j < colum - i - 1; j++)
+            {
+                if (productes[0, j].CompareTo(productes[0, j + 1]) > 0)
+                {
+                    for (int k = 0; k < 2; k++)
+                    {
+                        string aux = productes[k, j];
+                        productes[k, j] = productes[k, j + 1];
+                        productes[k, j + 1] = aux;
+                    }
+                }
+            }
+        }
+    }
+
+    static void BubbleShortPreus(string[,] productes)
+    {
+        int colum = productes.GetLength(1);
+        for (int i = 0; i < colum - 1; i++)
+        {
+            for (int j = 0; j < colum - i - 1; j++)
+            {
+                if (productes[1, j].CompareTo(productes[1, j + 1]) > 0)
+                {
+                    for (int k = 0; k < 2; k++)
+                    {
+                        string aux = productes[k, j];
+                        productes[k, j] = productes[k, j + 1];
+                        productes[k, j + 1] = aux;
+                    }
                 }
             }
         }
