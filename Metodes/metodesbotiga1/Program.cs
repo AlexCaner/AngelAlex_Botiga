@@ -97,7 +97,7 @@ namespace metodesbotiga1
             }
             productes = aux;
         }
-        static int TrobarPosicioVuida(string[,] productes)
+        static int TrobarPosicioBuida(string[,] productes)
         {
             int posicio = 0;
             bool trobada = false;
@@ -157,5 +157,3 @@ namespace metodesbotiga1
         {
 
         }
-    }
-}
